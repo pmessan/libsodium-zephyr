@@ -1,0 +1,108 @@
+# CMakeLists.txt for libsodium integration with Zephyr
+
+if(CONFIG_LIBSODIUM)
+  # Create a Zephyr library for the platform-specific adaptations
+  zephyr_library_named(sodium_zephyr)
+  zephyr_library_sources(src/sodium_zephyr.c)
+  
+  # Define source directories
+  set(LIBSODIUM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+  set(LIBSODIUM_SRC_DIR ${LIBSODIUM_DIR}/src/libsodium)
+  
+  # Build libsodium directly (no external build process)
+  zephyr_library_named(sodium)
+  
+  # Add necessary includes
+  zephyr_include_directories(
+    ${LIBSODIUM_DIR}/src/libsodium/include
+    ${LIBSODIUM_DIR}/src/libsodium/include/sodium
+  )
+  
+  # Make the includes available to applications
+  zephyr_library_include_directories(
+    ${LIBSODIUM_DIR}/src/libsodium/include
+    ${LIBSODIUM_DIR}/src/libsodium/include/sodium
+  )
+  
+  # Create sodium version header
+  configure_file(
+    ${LIBSODIUM_DIR}/src/libsodium/include/sodium/version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/sodium/version.h
+  )
+  zephyr_include_directories(${CMAKE_CURRENT_BINARY_DIR})
+  
+  # Define platform-specific config
+  zephyr_compile_definitions(
+    CONFIGURED=1
+    NATIVE_LITTLE_ENDIAN=1
+    HAVE_PTHREAD_PRIO_INHERIT=1
+    HAVE_PTHREAD=1
+    __STDC_LIMIT_MACROS
+    __STDC_CONSTANT_MACROS
+  )
+  
+  # Disable ASM optimizations by default for embedded platforms
+  if(NOT CONFIG_LIBSODIUM_ENABLE_ASM)
+    zephyr_compile_definitions(SODIUM_DISABLE_ASM)
+  endif()
+  
+  # Add all necessary source files
+  zephyr_library_sources(
+    # Core files
+    ${LIBSODIUM_SRC_DIR}/core.c
+    ${LIBSODIUM_SRC_DIR}/crypto_core/ed25519/ref10/ed25519_ref10.c
+    ${LIBSODIUM_SRC_DIR}/crypto_core/hchacha20/core_hchacha20.c
+    ${LIBSODIUM_SRC_DIR}/crypto_core/hsalsa20/ref2/core_hsalsa20_ref2.c
+    ${LIBSODIUM_SRC_DIR}/crypto_core/hsalsa20/core_hsalsa20.c
+    ${LIBSODIUM_SRC_DIR}/crypto_core/salsa/ref/core_salsa_ref.c
+    
+    # Random bytes (we'll override this with Zephyr's RNG)
+    ${LIBSODIUM_SRC_DIR}/randombytes/randombytes.c
+    
+    # Key exchange
+    ${LIBSODIUM_SRC_DIR}/crypto_kx/crypto_kx.c
+    
+    # Box (needed for NaCl compatibility)
+    ${LIBSODIUM_SRC_DIR}/crypto_box/crypto_box.c
+    ${LIBSODIUM_SRC_DIR}/crypto_box/crypto_box_easy.c
+    ${LIBSODIUM_SRC_DIR}/crypto_box/crypto_box_seal.c
+    
+    # Necessary crypto primitives
+    ${LIBSODIUM_SRC_DIR}/crypto_hash/sha256/cp/hash_sha256_cp.c
+    ${LIBSODIUM_SRC_DIR}/crypto_hash/sha512/cp/hash_sha512_cp.c
+    ${LIBSODIUM_SRC_DIR}/crypto_pwhash/argon2/argon2-core.c
+    ${LIBSODIUM_SRC_DIR}/crypto_pwhash/argon2/argon2-encoding.c
+    ${LIBSODIUM_SRC_DIR}/crypto_pwhash/argon2/argon2-fill-block-ref.c
+    ${LIBSODIUM_SRC_DIR}/crypto_pwhash/argon2/argon2.c
+    ${LIBSODIUM_SRC_DIR}/crypto_pwhash/argon2/blake2b-long.c
+    ${LIBSODIUM_SRC_DIR}/crypto_pwhash/crypto_pwhash.c
+    ${LIBSODIUM_SRC_DIR}/crypto_scalarmult/curve25519/ref10/x25519_ref10.c
+    ${LIBSODIUM_SRC_DIR}/crypto_scalarmult/curve25519/scalarmult_curve25519.c
+    ${LIBSODIUM_SRC_DIR}/crypto_secretbox/crypto_secretbox.c
+    ${LIBSODIUM_SRC_DIR}/crypto_secretbox/crypto_secretbox_easy.c
+    ${LIBSODIUM_SRC_DIR}/crypto_secretbox/xchacha20poly1305/secretbox_xchacha20poly1305.c
+    ${LIBSODIUM_SRC_DIR}/crypto_secretstream/xchacha20poly1305/secretstream_xchacha20poly1305.c
+    ${LIBSODIUM_SRC_DIR}/crypto_stream/chacha20/stream_chacha20.c
+    ${LIBSODIUM_SRC_DIR}/crypto_stream/chacha20/ref/chacha20_ref.c
+    ${LIBSODIUM_SRC_DIR}/crypto_stream/xchacha20/stream_xchacha20.c
+    ${LIBSODIUM_SRC_DIR}/crypto_verify/sodium/verify.c
+    ${LIBSODIUM_SRC_DIR}/sodium/codecs.c
+    ${LIBSODIUM_SRC_DIR}/sodium/core.c
+    ${LIBSODIUM_SRC_DIR}/sodium/utils.c
+    ${LIBSODIUM_SRC_DIR}/sodium/version.c
+  )
+  
+  # Add more sources as needed based on CONFIG options
+  if(CONFIG_LIBSODIUM_FULL)
+    zephyr_library_sources(
+      # Additional cryptographic primitives
+      ${LIBSODIUM_SRC_DIR}/crypto_aead/chacha20poly1305/sodium/aead_chacha20poly1305.c
+      ${LIBSODIUM_SRC_DIR}/crypto_aead/xchacha20poly1305/sodium/aead_xchacha20poly1305.c
+      ${LIBSODIUM_SRC_DIR}/crypto_auth/crypto_auth.c
+      ${LIBSODIUM_SRC_DIR}/crypto_auth/hmacsha256/auth_hmacsha256.c
+      ${LIBSODIUM_SRC_DIR}/crypto_auth/hmacsha512/auth_hmacsha512.c
+      ${LIBSODIUM_SRC_DIR}/crypto_auth/hmacsha512256/auth_hmacsha512256.c
+      # Add more as needed...
+    )
+  endif()
+endif()

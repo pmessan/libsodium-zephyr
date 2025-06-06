@@ -1,0 +1,4 @@
+build:
+  cmake: src
+  # cmake: zephyr # builds the version with autools
+  kconfig: zephyr/Kconfig

@@ -1,0 +1,162 @@
+# Kconfig - libsodium configuration options
+
+menuconfig LIBSODIUM
+	bool "libsodium cryptographic library"
+	help
+	  This option enables the libsodium cryptographic library.
+
+if LIBSODIUM
+
+config LIBSODIUM_MINIMAL
+    bool "Minimal libsodium implementation"
+    default y
+    select LIBSODIUM_USE_ZEPHYR_RANDOM
+    # select LIBSODIUM_CUSTOM_MEMORY
+    # select LIBSODIUM_CRYPTO_AEAD
+    select LIBSODIUM_CRYPTO_AUTH
+    select LIBSODIUM_CRYPTO_BOX
+    select LIBSODIUM_CRYPTO_CORE
+    # select LIBSODIUM_CRYPTO_GENERICHASH
+    # select LIBSODIUM_CRYPTO_HASH
+    # select LIBSODIUM_CRYPTO_SIGN
+    select LIBSODIUM_CRYPTO_STREAM
+    select LIBSODIUM_CRYPTO_PWHASH
+    # select LIBSODIUM_CRYPTO_KDF
+    select LIBSODIUM_CRYPTO_SHORTHASH
+    # select LIBSODIUM_CRYPTO_SCALARMULT
+    select LIBSODIUM_CRYPTO_SECRETBOX
+    select LIBSODIUM_CRYPTO_VERIFY
+    select LIBSODIUM_CRYPTO_RANDOMBYTES
+    help
+      Build a minimal version of libsodium.
+      This is useful for embedded systems with limited resources.
+
+config LIBSODIUM_USE_ZEPHYR_RANDOM
+	bool "Use Zephyr's random number generator"
+	default y
+	depends on ENTROPY_GENERATOR
+	help
+	  Use Zephyr's random number generator instead of libsodium's default one.
+
+config LIBSODIUM_ENABLE_ASM
+	bool "Enable assembly optimizations"
+	default n
+	help
+	  Enable assembly optimizations for supported platforms.
+	  Generally not recommended for embedded systems.
+
+config LIBSODIUM_FULL
+	bool "Build full libsodium implementation"
+	default n
+	help
+	  Build the full libsodium implementation instead of minimal.
+	  Increases code size significantly.
+
+config LIBSODIUM_CUSTOM_MEMORY
+	bool "Use Zephyr memory management"
+	default y
+	help
+	  Use Zephyr's k_malloc/k_free instead of standard malloc/free.
+
+config LIBSODIUM_CRYPTO_AEAD
+    bool "Enable AEAD algorithms"
+    default y
+    help
+      Enable Authenticated Encryption with Associated Data (AEAD) algorithms.
+
+config LIBSODIUM_CRYPTO_AUTH
+    bool "Enable authentication algorithms"
+    default y
+    help
+      Enable authentication algorithms.
+
+config LIBSODIUM_CRYPTO_BOX
+    bool "Enable box algorithms"
+    default y
+    help
+      Enable public-key encryption algorithms.
+
+config LIBSODIUM_CRYPTO_CORE
+    bool "Enable core algorithms"
+    default y
+    help
+      Enable core algorithms.
+      These are the basic building blocks of the library.
+
+config LIBSODIUM_CRYPTO_GENERICHASH
+    bool "Enable generic hashing algorithms"
+    default y
+    help
+      Enable generic hashing algorithms.
+      These are not specific to any particular use case.
+
+config LIBSODIUM_CRYPTO_HASH
+    bool "Enable hashing algorithms"
+    default y
+    help
+      Enable hashing algorithms.
+      These are used for creating fixed-size hashes from variable-size inputs.
+
+config LIBSODIUM_CRYPTO_SIGN
+    bool "Enable digital signatures"
+    default y
+    help
+      Enable digital signature algorithms.
+
+config LIBSODIUM_CRYPTO_STREAM
+    bool "Enable stream ciphers"
+    default y
+    help
+      Enable stream cipher algorithms.
+      These are used for encrypting data streams.
+
+config LIBSODIUM_CRYPTO_PWHASH
+    bool "Enable password hashing"
+    default y
+    help
+      Enable password hashing algorithms.
+      These are used for securely storing passwords.
+
+config LIBSODIUM_CRYPTO_KDF
+    bool "Enable key derivation functions"
+    default y
+    help
+      Enable key derivation functions.
+      These are used for deriving keys from passwords or other keys.
+
+config LIBSODIUM_CRYPTO_SHORTHASH
+    bool "Enable short hashing algorithms"
+    default y
+    help
+      Enable short hashing algorithms.
+      These are used for creating fixed-size hashes from small inputs.
+
+config LIBSODIUM_CRYPTO_SCALARMULT
+    bool "Enable scalar multiplication algorithms"
+    default y
+    help
+      Enable scalar multiplication algorithms.
+      These are used for public-key cryptography.
+
+config LIBSODIUM_CRYPTO_SECRETBOX
+    bool "Enable secret-key encryption"
+    default y
+    help
+      Enable secret-key encryption algorithms.
+      These are used for encrypting data with a shared secret key.
+
+config LIBSODIUM_CRYPTO_VERIFY
+    bool "Enable signature verification"
+    default y
+    help
+      Enable signature verification algorithms.
+      These are used for verifying digital signatures.
+
+config LIBSODIUM_CRYPTO_RANDOMBYTES
+    bool "Enable random bytes generation"
+    default y
+    help
+      Enable random bytes generation algorithms.
+      These are used for generating random data.
+
+endif # LIBSODIUM

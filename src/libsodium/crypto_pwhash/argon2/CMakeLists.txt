@@ -1,0 +1,11 @@
+zephyr_sources(
+	argon2-core.c
+	argon2-encoding.c
+	argon2-fill-block-avx2.c
+	argon2-fill-block-avx512f.c
+	argon2-fill-block-ssse3.c
+	argon2.c
+	blake2b-long.c
+	pwhash_argon2i.c
+	pwhash_argon2id.c
+)
