@@ -166,3 +166,6 @@ testing
 .zig-cache
 zig-cache
 zig-out
+.python-version
+.west
+.venv

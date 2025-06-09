@@ -1466,7 +1466,8 @@ case $cpu-$vendor in
 			| xtensa* \
 			| ymp \
 			| z80 \
-			| z8k)
+			| z8k \
+            | Generic)
 				;;
 
 			*)

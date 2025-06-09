@@ -2,7 +2,7 @@
 #ifndef sodium_H
 #define sodium_H
 
-#include "sodium/version.h"
+// #include "sodium/version.h"
 
 #include "sodium/core.h"
 #include "sodium/crypto_aead_aegis128l.h"

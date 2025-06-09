@@ -24,8 +24,8 @@
 #ifdef _WIN32
 # include <windows.h>
 # include <wincrypt.h>
-#else
-# include <unistd.h>
+// #else
+// # include <unistd.h>
 #endif
 
 #ifndef HAVE_C_VARARRAYS
@@ -101,7 +101,7 @@ void *alloca (size_t);
 # endif
 #endif
 
-static size_t        page_size = DEFAULT_PAGE_SIZE;
+// static size_t        page_size = DEFAULT_PAGE_SIZE;
 static unsigned char canary[CANARY_SIZE];
 
 /* LCOV_EXCL_START */

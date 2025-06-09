@@ -1,0 +1,5 @@
+add_subdirectory(aegis128l)
+add_subdirectory(aegis256)
+add_subdirectory(aes256gcm)
+add_subdirectory(chacha20poly1305)
+add_subdirectory(xchacha20poly1305)

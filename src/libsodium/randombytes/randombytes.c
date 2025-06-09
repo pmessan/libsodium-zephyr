@@ -19,6 +19,9 @@
 # endif
 # include "randombytes_sysrandom.h"
 #endif
+#if defined(CONFIG_LIBSODIUM_USE_ZEPHYR_RANDOM)
+# include "randombytes_zephyr.h"
+#endif
 #include "private/common.h"
 
 /* C++Builder defines a "random" macro */
@@ -30,7 +33,7 @@ static const randombytes_implementation *implementation;
 # ifdef __EMSCRIPTEN__
 #  define RANDOMBYTES_DEFAULT_IMPLEMENTATION NULL
 # else
-#  define RANDOMBYTES_DEFAULT_IMPLEMENTATION &randombytes_sysrandom_implementation;
+#  define RANDOMBYTES_DEFAULT_IMPLEMENTATION &randombytes_zephyr_implementation;
 # endif
 #endif
 
